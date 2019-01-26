@@ -14,7 +14,7 @@ namespace FibonacciBenchmark
         static void Main(string[] args)
         {
             string[] input;
-            int n = 500;
+            int n = 50;
             long result;
             Stopwatch sw = new Stopwatch();
             Fibonacci generator = null;
@@ -23,7 +23,7 @@ namespace FibonacciBenchmark
             {
                 PrintMenu(n);
                 input = Console.ReadLine().Split(' ');
-                sw.Reset();
+                
 
                 switch (input[0])
                 {
@@ -35,6 +35,11 @@ namespace FibonacciBenchmark
                         break;
                     case "n":
                         Int32.TryParse(input[1], out n);
+                        if (n < 0)
+                        {
+                            Console.WriteLine("Please enter only positive n");
+                            n = 1;
+                        }
                         break;
                     case "exit":
                     case "q":
@@ -46,8 +51,16 @@ namespace FibonacciBenchmark
 
                 if (generator != null)
                 {
+                    sw.Reset();
                     sw.Start();
-                    result = generator(n);
+                    try
+                    {
+                        result = generator(n);
+                    }
+                    catch(OverflowException e)
+                    {
+                        continue;
+                    }
                     sw.Stop();
                     Console.WriteLine($"Fibonacci({n}) = {result:N0}");
                     Console.WriteLine($"Time spend = {sw.ElapsedMilliseconds:N0} ms");
@@ -61,8 +74,8 @@ namespace FibonacciBenchmark
         {
             Console.WriteLine();
             Console.WriteLine("FibonacciBenchmark");
-            Console.WriteLine("  1 Classic Fibonacci generator");
-            Console.WriteLine("  2 Array Fibonacci generator");
+            Console.WriteLine("  1 Classic recursion");
+            Console.WriteLine("  2 Utilizing an Array");
             Console.WriteLine($"  n Calculate nth Fibonacci number (Current value {n})");
             Console.WriteLine("  q Quit");
             Console.Write(">");
@@ -73,7 +86,7 @@ namespace FibonacciBenchmark
     {
         public static long Fibonacci(int n)
         {
-            if (n <= 0)
+            if (n == 0)
                 return 0;
             else if (n == 1)
                 return 1;
@@ -85,7 +98,7 @@ namespace FibonacciBenchmark
                 catch (OverflowException e)
                 {
                     Console.WriteLine($"Calculation overflow occured at n={n}");
-                    return 0;
+                    throw;
                 }
 
         }
@@ -95,19 +108,17 @@ namespace FibonacciBenchmark
     {
         public static long Fibonacci(int n)
         {
-            long prevprev = 0;
-            long prev = 1;
             long[] array;
 
             if (n <= 0)
-                return prevprev;
+                return 0L;
             else if (n == 1)
-                return prev;
+                return 1L;
             else
             {
                 array = new long[n + 1];
-                array[0] = prevprev;
-                array[1] = prev;
+                array[0] = 0L;
+                array[1] = 1L;
                 for (int i = 2; i < array.Length; i++)
                 {
                     try
@@ -117,8 +128,8 @@ namespace FibonacciBenchmark
                     catch (OverflowException e)
                     {
                         Console.WriteLine($"Calculation overflow occured at n={i}");
-                        return 0;
-                    }
+                        throw;
+                   }
                 }
                 return array[n];
             }

@@ -9,13 +9,13 @@ namespace FibonacciBenchmark
 {
     class Program
     {
-        public delegate long Fibonacci(int n);
+        public delegate ulong Fibonacci(int n);
 
         static void Main(string[] args)
         {
             string[] input;
             int n = 50;
-            long result;
+            ulong result;
             Stopwatch sw = new Stopwatch();
             Fibonacci generator = null;
 
@@ -32,6 +32,9 @@ namespace FibonacciBenchmark
                         break;
                     case "2":
                         generator = FibonacciArray.Fibonacci;
+                        break;
+                    case "3":
+                        generator = FibonacciIteration.Fibonacci;
                         break;
                     case "n":
                         Int32.TryParse(input[1], out n);
@@ -76,6 +79,7 @@ namespace FibonacciBenchmark
             Console.WriteLine("FibonacciBenchmark");
             Console.WriteLine("  1 Classic recursion");
             Console.WriteLine("  2 Utilizing an Array");
+            Console.WriteLine("  3 Iteration");
             Console.WriteLine($"  n Calculate nth Fibonacci number (Current value {n})");
             Console.WriteLine("  q Quit");
             Console.Write(">");
@@ -84,12 +88,12 @@ namespace FibonacciBenchmark
 
     public static class FibonacciClassic
     {
-        public static long Fibonacci(int n)
+        public static ulong Fibonacci(int n)
         {
             if (n == 0)
-                return 0;
+                return 0UL;
             else if (n == 1)
-                return 1;
+                return 1UL;
             else
                 try
                 {
@@ -106,17 +110,17 @@ namespace FibonacciBenchmark
 
     public static class FibonacciArray
     {
-        public static long Fibonacci(int n)
+        public static ulong Fibonacci(int n)
         {
-            long[] array;
+            ulong[] array;
 
-            if (n <= 0)
-                return 0L;
+            if (n == 0)
+                return 0UL;
             else if (n == 1)
-                return 1L;
+                return 1UL;
             else
             {
-                array = new long[n + 1];
+                array = new ulong[n + 1];
                 array[0] = 0L;
                 array[1] = 1L;
                 for (int i = 2; i < array.Length; i++)
@@ -132,6 +136,32 @@ namespace FibonacciBenchmark
                    }
                 }
                 return array[n];
+            }
+        }
+    }
+
+    public static class FibonacciIteration
+    {
+        public static ulong Fibonacci(int n)
+        {
+            if (n == 0)
+                return 0UL;
+            else if (n == 1)
+                return 1UL;
+            else
+            {
+                ulong prev = 1UL;
+                ulong prevprev = 0UL;
+                ulong result = 1UL;
+                int loop = 1;
+                while(loop < n)
+                {
+                    result = prev + prevprev;
+                    prevprev = prev;
+                    prev = result;
+                    loop++;
+                }
+                return result;
             }
         }
     }

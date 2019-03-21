@@ -42,11 +42,13 @@ namespace FibonacciBenchmark
                             Console.WriteLine("n 30");
                             break;
                         }
+
                         if (n < 0)
                         {
                             Console.WriteLine("Please enter only positive n");
                             n = 1;
                         }
+
                         break;
                     case "exit":
                     case "q":
@@ -64,7 +66,7 @@ namespace FibonacciBenchmark
                     {
                         result = generator(n);
                     }
-                    catch (OverflowException e)
+                    catch (OverflowException)
                     {
                         continue;
                     }
@@ -72,6 +74,7 @@ namespace FibonacciBenchmark
                     {
                         generator = null;
                     }
+
                     sw.Stop();
                     Console.WriteLine($"Fibonacci({n}) = {result:N0}");
                     Console.WriteLine($"Time spend = {sw.ElapsedMilliseconds:N0} ms");
@@ -105,7 +108,7 @@ namespace FibonacciBenchmark
                 {
                     return checked(Fibonacci(n - 2) + Fibonacci(n - 1));
                 }
-                catch (OverflowException e)
+                catch (OverflowException)
                 {
                     Console.WriteLine($"Calculation overflow occured at n={n}");
                     throw;
@@ -134,12 +137,13 @@ namespace FibonacciBenchmark
                     {
                         array[i] = checked(array[i - 1] + array[i - 2]);
                     }
-                    catch (OverflowException e)
+                    catch (OverflowException)
                     {
                         Console.WriteLine($"Calculation overflow occured at n={i}");
                         throw;
                     }
                 }
+
                 return array[n];
             }
         }
@@ -155,25 +159,27 @@ namespace FibonacciBenchmark
                 return 1UL;
             else
             {
-                ulong prev = 1UL;
-                ulong prevprev = 0UL;
-                ulong result = 1UL;
-                int i = 1;
+                var prev = 1UL;
+                var prevprev = 0UL;
+                var result = 1UL;
+                var i = 1;
                 while (i < n)
                 {
                     try
                     {
                         result = checked(prev + prevprev);
                     }
-                    catch (OverflowException e)
+                    catch (OverflowException)
                     {
                         Console.WriteLine($"Calculation overflow occured at n={i}");
                         throw;
                     }
+
                     prevprev = prev;
                     prev = result;
                     i++;
                 }
+
                 return result;
             }
         }

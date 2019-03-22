@@ -9,31 +9,29 @@ namespace FibonacciBenchmark
 {
     class Program
     {
-        public delegate ulong Fibonacci(int n);
+        private delegate ulong Fibonacci(int n);
 
         static void Main(string[] args)
         {
-            string[] input;
-            int n = 30;
-            ulong result;
-            Stopwatch sw = new Stopwatch();
-            Fibonacci generator = null;
+            var n = 30;
+            var sw = new Stopwatch();
+            IFibonacciGenerator generator = null;
 
             while (true)
             {
                 PrintMenu(n);
-                input = Console.ReadLine().Split(' ');
+                var input = Console.ReadLine().Split(' ');
 
                 switch (input[0])
                 {
                     case "1":
-                        generator = FibonacciClassic.Fibonacci;
+                        generator = new FibonacciClassic();
                         break;
                     case "2":
-                        generator = FibonacciArray.Fibonacci;
+                        generator = new FibonacciArray();
                         break;
                     case "3":
-                        generator = FibonacciIteration.Fibonacci;
+                        generator = new FibonacciIteration();
                         break;
                     case "n":
                         if (input.Length == 1 || !Int32.TryParse(input[1], out n))
@@ -62,9 +60,10 @@ namespace FibonacciBenchmark
                 {
                     sw.Reset();
                     sw.Start();
+                    var result = 0UL;
                     try
                     {
-                        result = generator(n);
+                        result = generator.Fibonacci(n);
                     }
                     catch (OverflowException)
                     {
@@ -92,96 +91,6 @@ namespace FibonacciBenchmark
             Console.WriteLine($"  n Calculate nth Fibonacci number (Current n={n})");
             Console.WriteLine("  q Quit");
             Console.Write(">");
-        }
-    }
-
-    public static class FibonacciClassic
-    {
-        public static ulong Fibonacci(int n)
-        {
-            if (n == 0)
-                return 0UL;
-            else if (n == 1)
-                return 1UL;
-            else
-                try
-                {
-                    return checked(Fibonacci(n - 2) + Fibonacci(n - 1));
-                }
-                catch (OverflowException)
-                {
-                    Console.WriteLine($"Calculation overflow occured at n={n}");
-                    throw;
-                }
-        }
-    }
-
-    public static class FibonacciArray
-    {
-        public static ulong Fibonacci(int n)
-        {
-            ulong[] array;
-
-            if (n == 0)
-                return 0UL;
-            else if (n == 1)
-                return 1UL;
-            else
-            {
-                array = new ulong[n + 1];
-                array[0] = 0L;
-                array[1] = 1L;
-                for (int i = 2; i < array.Length; i++)
-                {
-                    try
-                    {
-                        array[i] = checked(array[i - 1] + array[i - 2]);
-                    }
-                    catch (OverflowException)
-                    {
-                        Console.WriteLine($"Calculation overflow occured at n={i}");
-                        throw;
-                    }
-                }
-
-                return array[n];
-            }
-        }
-    }
-
-    public static class FibonacciIteration
-    {
-        public static ulong Fibonacci(int n)
-        {
-            if (n == 0)
-                return 0UL;
-            else if (n == 1)
-                return 1UL;
-            else
-            {
-                var prev = 1UL;
-                var prevprev = 0UL;
-                var result = 1UL;
-                var i = 1;
-                while (i < n)
-                {
-                    try
-                    {
-                        result = checked(prev + prevprev);
-                    }
-                    catch (OverflowException)
-                    {
-                        Console.WriteLine($"Calculation overflow occured at n={i}");
-                        throw;
-                    }
-
-                    prevprev = prev;
-                    prev = result;
-                    i++;
-                }
-
-                return result;
-            }
         }
     }
 }

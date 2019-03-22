@@ -12,6 +12,8 @@ namespace FibonacciBenchmarkTests
         [DataRow(0UL,0)]
         [DataRow(1UL,1)]
         [DataRow(1UL,2)]
+        [DataRow(21UL,8)]
+        [DataRow(34UL,9)]
         [DataRow(55UL,10)]
         public void BaseTest(ulong output, int input)
         {

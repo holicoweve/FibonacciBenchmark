@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 
 namespace FibonacciBenchmark
@@ -13,13 +9,13 @@ namespace FibonacciBenchmark
 
         static void Main(string[] args)
         {
-            var n = 30;
+            var defaultInput = 30;
             var sw = new Stopwatch();
             IFibonacciGenerator generator = null;
 
             while (true)
             {
-                PrintMenu(n);
+                PrintMenu(defaultInput);
                 var input = Console.ReadLine().Split(' ');
 
                 switch (input[0])
@@ -34,17 +30,17 @@ namespace FibonacciBenchmark
                         generator = new FibonacciIteration();
                         break;
                     case "n":
-                        if (input.Length == 1 || !Int32.TryParse(input[1], out n))
+                        if (input.Length == 1 || !Int32.TryParse(input[1], out defaultInput))
                         {
                             Console.WriteLine("Syntax Error: to set n to 30 please use the following example");
                             Console.WriteLine("n 30");
                             break;
                         }
 
-                        if (n < 0)
+                        if (defaultInput < 0)
                         {
                             Console.WriteLine("Please enter only positive n");
-                            n = 1;
+                            defaultInput = 1;
                         }
 
                         break;
@@ -63,7 +59,7 @@ namespace FibonacciBenchmark
                     var result = 0UL;
                     try
                     {
-                        result = generator.Fibonacci(n);
+                        result = generator.Fibonacci(defaultInput);
                     }
                     catch (OverflowException)
                     {
@@ -75,7 +71,7 @@ namespace FibonacciBenchmark
                     }
 
                     sw.Stop();
-                    Console.WriteLine($"Fibonacci({n}) = {result:N0}");
+                    Console.WriteLine($"Fibonacci({defaultInput}) = {result:N0}");
                     Console.WriteLine($"Time spend = {sw.ElapsedMilliseconds:N0} ms");
                 }
             }

@@ -15,9 +15,9 @@ namespace FibonacciBenchmarkTests
         [DataRow(21UL,8)]
         [DataRow(34UL,9)]
         [DataRow(55UL,10)]
-        public void BaseTest(ulong output, int input)
+        public void PositiveInputTest(ulong output, int input)
         {
-            IFibonacciGenerator generator = GetGeneratorInstance();
+            var generator = GetGeneratorInstance();
             Assert.AreEqual(output, generator.Fibonacci(input));
 
         }

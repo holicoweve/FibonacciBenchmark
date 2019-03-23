@@ -4,6 +4,11 @@ namespace FibonacciBenchmark
 {
     public class FibonacciArray : IFibonacciGenerator
     {
+        public string Name()
+        {
+            return "Array Fibonacci Generator";
+        }
+
         public ulong Fibonacci(int n)
         {
             ulong[] array;

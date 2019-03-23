@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace FibonacciBenchmark
 {
-    class Program
+    public class Program
     {
-        private delegate ulong Fibonacci(int n);
+        private static readonly List<IFibonacciGenerator> _generators = new List<IFibonacciGenerator>
+            {new FibonacciClassic(), new FibonacciArray(), new FibonacciIteration()};
 
         static void Main(string[] args)
         {
@@ -20,15 +22,6 @@ namespace FibonacciBenchmark
 
                 switch (input[0])
                 {
-                    case "1":
-                        generator = new FibonacciClassic();
-                        break;
-                    case "2":
-                        generator = new FibonacciArray();
-                        break;
-                    case "3":
-                        generator = new FibonacciIteration();
-                        break;
                     case "n":
                         if (input.Length == 1 || !Int32.TryParse(input[1], out defaultInput))
                         {
@@ -48,7 +41,7 @@ namespace FibonacciBenchmark
                     case "q":
                         return;
                     default:
-                        Console.WriteLine("Invalid input");
+                        generator = GetGenerator(input[0]);
                         break;
                 }
 
@@ -74,16 +67,38 @@ namespace FibonacciBenchmark
                     Console.WriteLine($"Fibonacci({defaultInput}) = {result:N0}");
                     Console.WriteLine($"Time spend = {sw.ElapsedMilliseconds:N0} ms");
                 }
+                else
+                {
+                    Console.WriteLine("Invalid Input");
+                }
             }
+        }
+
+        public static IFibonacciGenerator GetGenerator(string choiceString)
+        {
+            if (Int32.TryParse(choiceString, out int choice))
+                return GetGenerator(choice);
+            else
+                return null;
+        }
+
+        public static IFibonacciGenerator GetGenerator(int choice)
+        {
+            if (choice >= 1 && choice <= _generators.Count)
+                return _generators[choice - 1];
+            else
+                return null;
         }
 
         static void PrintMenu(int n)
         {
             Console.WriteLine();
             Console.WriteLine("FibonacciBenchmark");
-            Console.WriteLine("  1 Classic recursion");
-            Console.WriteLine("  2 Utilizing an Array");
-            Console.WriteLine("  3 Iteration");
+            for (int i = 0; i < _generators.Count; i++)
+            {
+                Console.WriteLine($"  {i + 1} {_generators[i].Name()}");
+            }
+
             Console.WriteLine($"  n Calculate nth Fibonacci number (Current n={n})");
             Console.WriteLine("  q Quit");
             Console.Write(">");

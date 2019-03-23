@@ -4,6 +4,11 @@ namespace FibonacciBenchmark
 {
     public class FibonacciClassic : IFibonacciGenerator
     {
+        public string Name()
+        {
+            return "Classic Fibonacci Generator";
+        }
+
         public ulong Fibonacci(int n)
         {
             if (n == 0)
